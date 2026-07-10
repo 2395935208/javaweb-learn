@@ -44,5 +44,66 @@ POM全称是Project Object Model，可以理解为是这个项目的说明书
     </dependencies>
 
 </project>
-```
+``` 
 ## 2. groupId、artifactId、version 是什么？
+Maven坐标，用来唯一确定一个jar包或者项目的
+- groupId：一般表示公司，组织，个人域名的到写
+例如：
+com.alibaba
+org.springframework.boot
+com.example
+- artifactId；表示项目名或模块名
+例如：
+```XML
+<artifactId>health-check-system</artifactId>
+```
+- version：表示项目版本
+例如：<version>1.0.0</version>
+## 3.dependency是什么？
+dependency就是依赖，也就是你要用别人写好的工具包
+例如你要用Spring Web：
+```XML
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+</dependency>
+```
+## 4.Maven仓库是什么？
+Maven下载依赖时会去仓库找，Maven仓库分为三类：
+本地仓库，远程仓库，中央仓库
+- 本地仓库：
+  在你电脑上的Maven依赖缓存目录中，windows中一般在C:\Users\你的用户名\.m2\repository
+- 中央仓库：
+  Maven官方仓库，你的项目里写了依赖，Maven回去中央仓库下载
+- 镜像仓库：
+国内访问中央仓库比较慢，所以经常用阿里云的镜像仓库
+很多教程会教你配置：
+```XML
+<mirror>
+    <id>aliyunmaven</id>
+    <mirrorOf>*</mirrorOf>
+    <name>阿里云公共仓库</name>
+    <url>https://maven.aliyun.com/repository/public</url>
+</mirror>
+```
+这个配置通常写在：
+Maven安装目录/conf/settings.xml
+## 5.Maven项目标准目录
+demo
+├── pom.xml
+└── src
+    ├── main
+    │   ├── java
+    │   │   └── com/example/demo
+    │   │       └── DemoApplication.java
+    │   └── resources
+    │       └── application.yml
+    └── test
+        └── java  
+重点记：
+src/main/java       放 Java 源代码
+src/main/resources  放配置文件
+src/test/java       放测试代码
+pom.xml             Maven 配置文件
+## 6.Maven生命周期
+
