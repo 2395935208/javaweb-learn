@@ -106,4 +106,37 @@ src/main/resources  放配置文件
 src/test/java       放测试代码
 pom.xml             Maven 配置文件
 ## 6.Maven生命周期
-
+maven常用命令有：
+mvn clean
+mvn compile
+mvn test
+mvn package
+mvn install
+- Maven clean：
+清理旧的编译结果
+他会删除target/
+- Maven compile：
+会编译项目，把.java文件编译成.class文件
+- Maven test：
+运行测试
+- Maven package：
+打包项目
+spring boot项目打包后一般会生成target/demo-0.0.1-SNAPSHOT.jar
+- Maven install：
+把项目安装到本地仓库
+## 7.Maven依赖传递
+你引入 A，A 依赖 B，B 依赖 C，Maven 会把 B、C 也一起下载下来。
+## 8.stater是什么
+spring boot里经常出现：
+spring-boot-starter-web
+spring-boot-starter-test
+spring-boot-starter-data-redis
+spring-boot-starter-security
+stater可以理解为一组依赖的合集
+比如：<artifactId>spring-boot-starter-web</artifactId>
+他帮你一次性引入：
+Spring MVC
+内置 Tomcat
+JSON 处理
+Web 开发相关依赖
+你不用一个个手写了
