@@ -161,3 +161,94 @@ public User getUser() {
 }
 ```
 ## 9.Service 层是什么？
+Service是业务逻辑层，处理逻辑业务
+一般controller层接收请求，然后调用Service层处理逻辑
+## 10.mapper层是什么
+mapper是数据访问层，作用是操作数据库
+## 11.Entity、DTO、VO 是什么？
+- 1.Entity 是实体类，一般对应数据库表。
+数据库表：
+
+user
+
+字段：
+
+id
+username
+password
+age
+
+Java 实体类：
+
+public class User {
+    private Long id;
+    private String username;
+    private String password;
+    private Integer age;
+}
+- 2.DTO是前端传给后端的数据对象
+例如登录请求：
+
+{
+  "username": "admin",
+  "password": "123456"
+}
+
+后端可以定义：
+
+public class LoginDTO {
+    private String username;
+    private String password;
+}
+DTO的作用是接收请求参数
+- 3.VO是后端返回给前端的数据对象
+比如用户信息：
+
+{
+  "id": 1,
+  "username": "admin"
+}
+
+注意，不应该把密码返回给前端。
+
+所以不能直接返回 Entity。
+    
+可以定义：
+
+public class UserVO {
+    private Long id;
+    private String username;
+}
+
+VO 的作用是：
+
+控制返回给前端的数据。
+## 12.IoC 和 DI 是什么？
+- IoC,全称是Inversion of Control，中文是控制反转
+以前要自己创建对象：
+UserService userService = new UserService();
+现在交给Spring创建：
+@Autowired
+private UserService userService;
+- Spring容器
+可以理解为一个专门管理对象的大箱子
+里面放了很多对象，这些对象叫bean
+- DI，全称是Dependency Injection，中文是依赖注入
+一个对象需要另一个对象时，Spring自动帮你塞进去
+```java
+@RestController
+public class UserController {
+
+    @Autowired
+    private UserService userService;
+}
+```
+- @Autowired
+
+@Autowired 就是自动注入。
+```java
+@Autowired
+private UserService userService;
+```
+总结：IoC 是思想，DI 是实现方式，@Autowired 是实现 DI 的一种工具。
+## 13.application.yml 是什么？
