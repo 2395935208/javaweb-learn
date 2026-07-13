@@ -252,3 +252,57 @@ private UserService userService;
 ```
 总结：IoC 是思想，DI 是实现方式，@Autowired 是实现 DI 的一种工具。
 ## 13.application.yml 是什么？
+Spring Boot的配置文件
+常见配置：
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/demo
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    它可以配置：
+ 端口号
+数据库连接
+Redis
+文件上传大小
+日志
+JWT 密钥
+MyBatis 配置
+### application.properties 和 application.yml 区别
+properties 写法：
+
+server.port=8080
+spring.datasource.username=root
+
+yml 写法：
+
+server:
+  port: 8080
+
+spring:
+  datasource:
+    username: root
+
+现在很多项目更喜欢用 application.yml，因为层级更清晰。
+## 14.、Spring Boot 和 Maven 的关系
+Maven 管项目，Spring Boot 写业务。
+
+关系如下：
+
+Maven
+负责：
+- 下载 Spring Boot 依赖
+- 管理 MySQL、MyBatis、Lombok 等依赖
+- 编译项目
+- 打包项目
+
+Spring Boot
+负责：
+- 启动后端服务
+- 接收 HTTP 请求
+- 返回 JSON 数据
+- 操作业务逻辑
+- 整合数据库、Redis、JWT 等
