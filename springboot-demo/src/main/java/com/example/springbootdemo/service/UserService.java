@@ -15,7 +15,7 @@ public class UserService {
         this.userMapper = userMapper;
     }
 
-    public User getuserById(@PathVariable Long id){
+    public User getUserById( Long id){
         return userMapper.selectById(id);
     }
 }

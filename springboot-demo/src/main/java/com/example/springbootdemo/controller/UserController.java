@@ -2,7 +2,6 @@ package com.example.springbootdemo.controller;
 
 import com.example.springbootdemo.entity.User;
 import com.example.springbootdemo.service.UserService;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +20,6 @@ public class UserController {
     //get方法，获取动态的id,用{}包起来的是动态路径
     @GetMapping("/{id}")
     public User getUser(@PathVariable Long id){
-        return userService.getuserById(id);
+        return userService.getUserById(id);
     }
 }

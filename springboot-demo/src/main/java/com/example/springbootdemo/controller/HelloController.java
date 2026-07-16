@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 //第二个注解设置请求路径，访问路径为/hello
 @RequestMapping("/hello")
-public class helloController {
+public class HelloController {
     //第三个注解设置请求方法为GET
     @GetMapping
     public String hello(){
