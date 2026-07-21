@@ -215,4 +215,140 @@ User selectByUsername(String username);
 它表示：
 扫描这个包中的所有Mapper接口。
 启动类使用 @MapperScan,不用每个接口都写@Mapper
-## 9.删除 @Mapper 会怎样
+## 9.@Param("id")的作用
+```java
+User selectById(@Param("id") Long id);
+```
+传入的java参数是Long id，但SQL中参数是#{id}，那么@Param("id")的作用是：
+把传入的Java参数注册到MyBatis中，并给它起名叫 id。
+MyBatis内部可以近似理解成保存了：
+参数名称：id
+参数值：1
+如果改成：
+```java
+User selectById(@Param("userId") Long id);
+```
+也是可以的，只不过SQL也必须改成：
+```java
+WHERE id = #{userId}
+```
+**重点：**
+@Param中的名称
+        ↕
+#{}中的名称
+二者的内容必须保持一致，java变量名可以保持不同，但为了可读性通常保持一致
+## 10.#{id}不是简单的字符串替换
+可以近似理解为：
+```java
+PreparedStatement statement =
+        connection.prepareStatement(
+                "SELECT id, username, age FROM `user` WHERE id = ?"
+        );
+
+statement.setLong(1, 1L);
+```
+最终发送给数据库的是：
+SQL结构
++
+经过类型处理的参数
+不是把用户输入直接拼进SQL文本。
+## 11。为什么要使用问号占位符
+### （1）防止SQL注入
+用户输入只会作为一个“值”传递，不会被当成SQL命令的一部分。
+### （2）自动处理Java类型
+MyBatis会根据Java类型选择合适的JDBC处理方式。
+例如：
+Long    → BIGINT
+String  → VARCHAR
+Integer → INTEGER
+这部分由MyBatis的TypeHandler协助处理
+### （3）自动处理字符串引号
+正确写法：
+```sql
+WHERE username = #{username}
+```
+错误写法：
+```sql
+WHERE username = '#{username}'
+```
+## 12.#{}和${}的区别
+#{}：参数绑定
+```sql
+WHERE username = #{username}
+```
+经过处理后类似于：
+```sql
+WHERE username = ?
+```
+特点：
+使用预编译
+防止sql注入
+自动处理数据类型
+自动处理字符串
+查询条件几乎都用他
+
+${}：字符串替换
+```sql
+ORDER BY ${sortField}
+```
+MyBatis会把内容直接放入SQL文本。
+假设：
+sortField = age
+处理后：
+```sql
+ORDER BY age
+```
+特点:
+直接修改sql文本
+不进行安全的参数绑定
+可能发生sql注入
+## 13.多个参数怎样传递
+例如根据用户名和年龄查询：
+```java
+User selectByUsernameAndAge(
+        @Param("username") String username,
+        @Param("age") Integer age
+);
+```
+SQL：
+```java
+@Select("""
+    SELECT id, username, age
+    FROM `user`
+    WHERE username = #{username}
+      AND age = #{age}
+    """)
+```
+调用：
+```java
+userMapper.selectByUsernameAndAge("zhangsan", 20);
+```
+## 14.传递对象时怎样取值
+新增用户时，Mapper可能写成：
+```java
+int insert(User user);
+```
+调用：
+```java
+User user = new User();
+user.setUsername("zhangsan");
+user.setAge(20);
+
+userMapper.insert(user);
+```
+SQL可以写：
+```java
+@Insert("""
+    INSERT INTO `user` (username, age)
+    VALUES (#{username}, #{age})
+    """)
+int insert(User user);
+```
+传递对象时，#{username}表示读取user.getUsername()
+当传入的是对象时，#{}中通常写对象的属性名。
+## 15.返回值int表示什么
+新增功能：
+```java
+int insert(User user);
+```
+返回值int表示受影响的行数。
