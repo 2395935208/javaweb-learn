@@ -352,3 +352,37 @@ int insert(User user);
 int insert(User user);
 ```
 返回值int表示受影响的行数。
+## 16.数据库结果的结构
+SQL：
+```sql
+SELECT id, username, age
+FROM `user`;
+```
+可能返回：
+id | username | age
+---+----------+----
+1  | zhangsan | 20
+2  | lisi     | 21
+3  | wangwu   | 22
+它包含：
+3行数据
+每行3列
+列名分别是 id、username、age
+Java中的User：
+```java
+public class User {
+
+    private Long id;
+    private String username;
+    private Integer age;
+
+    // Getter、Setter
+}
+```
+MyBatis根据列名和属性名建立对应关系：
+数据库列       Java属性
+id       →    id
+username →    username
+age      →    age
+每一行数据都可以创建一个User。
+## 17.查询一行：返回User
