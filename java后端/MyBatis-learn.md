@@ -1,6 +1,7 @@
 # MyBatis是什么
 MyBatis是用来连接起来java和MySQL的框架
 他的底层仍然使用了JDBC，只不过封装了JDBC的操作，使得使用更加方便
+# 一次完整的执行流程
 ## 1.一次完整的查询
 请求进入：
 浏览器 → Tomcat → Spring MVC → Controller → Service → Mapper → MyBatis → JDBC → MySQL
@@ -22,6 +23,7 @@ MySQL → JDBC → MyBatis → User → Service → Controller → JSON → Tomc
 12. User逐层返回Controller
 13. Jackson把User转换成JSON
 14. Tomcat把HTTP响应发回客户端
+# Mapper接口和动态代理
 ## 2.Mapper为什么没有实现类也能运行
 UserMapper只是接口，selectById()也没有方法体，谁在真正执行这段代码？
 答案是：
@@ -215,6 +217,7 @@ User selectByUsername(String username);
 它表示：
 扫描这个包中的所有Mapper接口。
 启动类使用 @MapperScan,不用每个接口都写@Mapper
+# 参数绑定、@Param、#{}
 ## 9.@Param("id")的作用
 ```java
 User selectById(@Param("id") Long id);
@@ -352,6 +355,7 @@ int insert(User user);
 int insert(User user);
 ```
 返回值int表示受影响的行数。
+# 结果映射、User和List<User>
 ## 16.数据库结果的结构
 SQL：
 ```sql
@@ -386,3 +390,388 @@ username →    username
 age      →    age
 每一行数据都可以创建一个User。
 ## 17.查询一行：返回User
+Mapper方法:
+```java
+User selectById(Long id);
+```
+返回类型是：
+User
+MyBatis就认为这个查询最多应该得到一条记录。
+例如sql返回：
+id | username | age
+1  | zhangsan | 20
+那么MyBatis会创建一个User对象，并把结果中的值给User的属性。
+```java
+User user = new User();
+
+user.setId(1L);
+user.setUsername("zhangsan");
+user.setAge(20);
+
+return user;
+```
+## 18.查询多行：返回List<User>
+查询全部用户的方法应该声明：
+```java
+List<User> selectAll();
+```
+SQL:
+```sql
+SELECT id, username, age
+FROM `user`
+ORDER BY id;
+```
+数据库返回：
+id | username | age
+1  | zhangsan | 20
+2  | lisi     | 21
+3  | wangwu   | 22
+MyBatis会逐行处理：
+第一行：
+```java
+User user1 = new User();
+user1.setId(1L);
+user1.setUsername("zhangsan");
+user1.setAge(20);
+```
+第二行:
+```java
+User user2 = new User();
+user2.setId(2L);
+user2.setUsername("lisi");
+user2.setAge(21);
+```
+第三行：
+```java
+User user3 = new User();
+user3.setId(3L);
+user3.setUsername("wangwu");
+user3.setAge(22);
+```
+然后放进集合:
+```java
+List<User> users = new ArrayList<>();
+
+users.add(user1);
+users.add(user2);
+users.add(user3);
+
+return users;
+```
+对应关系则是：
+数据库一行   → 一个User
+数据库多行   → 多个User
+多个User     → List<User>
+## 19.没有数据时，集合返回什么
+如果方法返回：
+```java
+List<User> selectAll();
+```
+但是数据库没有任何用户，MyBatis通常返回：
+[]，而不是null
+因此如果：
+```java
+List<User> users = userMapper.selectAll();
+```
+一般可以判断：
+```java
+users.isEmpty()
+```
+而不是先判断：
+```java
+users == null
+```
+**对比：**
+返回单个User，查询不到 → 通常是null
+返回List<User>，查询不到 → 通常是空List
+## 20.MyBatis怎样知道返回什么类型
+关键是Mapper方法的签名：
+```java
+User selectById(Long id);
+```
+MyBatis看到返回类型是User，就按照单个对象处理
+
+而：
+```java
+List<User> selectAll();
+```
+MyBatis看到的返回类型是List，集合元素类型是User，就按照集合处理。
+## 21.列名与属性名相同：自动映射
+当前数据库列：
+id
+username
+age
+Java属性：
+id
+username
+age
+名称完全一致，所以MyBatis可以自动映射：
+id       → setId()
+username → setUsername()
+age      → setAge()
+这也是你现在的查询能够正常工作的原因。
+## 22.列名与属性名不同怎么办
+假设数据库字段是：
+user_name
+Java属性是：
+private String username;
+二者不相同：
+user_name ≠ username
+MyBatis可能无法自动把它们对应起来，导致：
+user.getUsername()
+得到：
+null
+方法一：使用SQL别名
+SELECT
+    id,
+    user_name AS username,
+    age
+FROM `user`;
+返回结果中的列名就变成：
+id
+username
+age
+这样可以映射到：
+private String username;
+SQL别名的含义是：
+数据库真正字段：user_name
+查询结果使用名称：username
+这是最直观的方法。
+## 23.下划线转驼峰
+更常见的情况是：
+数据库字段：user_name
+Java属性：userName
+数据库喜欢下划线命名：
+user_name
+created_time
+phone_number
+Java喜欢驼峰命名：
+userName
+createdTime
+phoneNumber
+可以配置MyBatis自动转换：
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+开启后：
+user_name    → userName
+created_time → createdTime
+phone_number → phoneNumber
+注意，你当前的Java属性是：
+username
+不是：
+userName
+因此 user_name → username 不属于标准的下划线转驼峰对应关系，仍然更适合使用别名：
+user_name AS username
+## 24.为什么使用Long和Integer
+包装类型可以表示null：
+新增前ID还没有生成
+数据库中的某个字段允许为空
+SQL没有查询某个字段
+包装类型区分：
+0    → 确实是数字0
+null → 没有值
+而基本类型：
+long
+int
+不能表示 null，默认值会是0。
+在Entity、DTO等数据对象中，包装类型通常更方便表达数据库中的空值。
+
+## 25.MyBatis映射与Jackson转换不是一回事
+需要再次区分：
+MyBatis
+数据库记录 → User对象
+例如：
+id=1, username=zhangsan, age=20
+        ↓
+new User(1, "zhangsan", 20)
+Jackson
+User对象 → JSON
+例如：
+User
+转换为：
+{
+  "id": 1,
+  "username": "zhangsan",
+  "age": 20
+}
+完整过程：
+MySQL记录
+    ↓ MyBatis
+User对象
+    ↓ Jackson
+JSON
+不要把这两个框架的作用混在一起。
+# 系统学习@Select
+@Select是MyBatis提供的查询注解，用于把一条SELECT语句绑定到Mapper方法。
+最基本结构：
+@Select("SELECT ...")
+返回类型 方法名(参数);
+例如：
+@Select("""
+    SELECT id, username, age
+    FROM `user`
+    WHERE id = #{id}
+    """)
+User selectById(@Param("id") Long id);
+它同时描述了四件事：
+@Select中的SQL  → 执行什么查询
+方法参数         → 查询需要什么条件
+方法名称         → 这个数据库操作叫什么
+返回类型         → 怎样组织查询结果
+## 1.SQL查询的基本组成
+常见查询结构：
+```sql
+SELECT 字段
+FROM 表
+WHERE 条件
+ORDER BY 排序字段
+LIMIT 数量;
+```
+例如：
+```sql
+SELECT id, username, age
+FROM `user`
+WHERE age >= 18
+ORDER BY id
+LIMIT 10;
+```
+含义：
+SELECT   → 查询哪些字段
+FROM     → 从哪张表查询
+WHERE    → 筛选哪些记录
+ORDER BY → 按什么顺序排列
+LIMIT    → 最多返回多少条
+## 2.为什么查询全部最好添加排序
+如果只写：
+```sql
+SELECT id, username, age
+FROM `user`
+```
+数据库没有承诺返回顺序永远固定。
+如果需要稳定顺序，应明确写：
+```sql
+ORDER BY id
+```
+默认是升序：
+```sql
+ORDER BY id ASC
+```
+降序：
+```sql
+ORDER BY id DESC
+```
+例如最新ID优先：
+```sql
+ORDER BY id DESC
+```
+##  3.精确查询与模糊查询
+- 精确查询：
+```sql
+WHERE username = #{username}
+```
+传入:
+zhang
+只能匹配用户名完全等于：
+zhang
+不能匹配：
+zhangsan
+xiaozhang
+- 模糊查询：
+MySQL使用：
+```sql
+LIKE
+```
+例如：
+```java
+@Select("""
+    SELECT id, username, age
+    FROM `user`
+    WHERE username LIKE CONCAT('%', #{keyword}, '%')
+    ORDER BY id
+    """)
+List<User> searchByUsername(
+        @Param("keyword") String keyword
+);
+```
+传入：
+zhang
+实际匹配模式：
+%zhang%
+其中：
+%zhang% → 任意位置包含zhang
+zhang%  → 以zhang开头
+%zhang  → 以zhang结尾
+这里使用：
+
+CONCAT('%', #{keyword}, '%')
+是因为 #{keyword}属于参数占位符，不能简单写成：
+LIKE '%#{keyword}%'
+正确思路是让MySQL把三个值连接起来：
+%
++
+参数keyword
++
+%
+## 4.范围查询
+查询年龄不低于某个值：
+```java
+@Select("""
+    SELECT id, username, age
+    FROM `user`
+    WHERE age >= #{minAge}
+    ORDER BY age
+    """)
+List<User> selectByMinAge(
+        @Param("minAge") Integer minAge
+);
+```
+范围查询：
+```java
+@Select("""
+    SELECT id, username, age
+    FROM `user`
+    WHERE age BETWEEN #{minAge} AND #{maxAge}
+    ORDER BY age
+    """)
+List<User> selectByAgeRange(
+        @Param("minAge") Integer minAge,
+        @Param("maxAge") Integer maxAge
+);
+```
+## 5.统计查询
+@Select不只能返回User，还能返回数字。
+统计用户数量：
+```java
+@Select("SELECT COUNT(*) FROM `user`")
+Long countUsers();
+```
+数据库返回一行一列：
+COUNT(*)
+3
+所以返回类型可以是：
+Long
+返回类型取决于查询结果，不是所有 @Select 都必须返回Entity。
+## 6.限制返回数量
+查询前5个用户：
+```java
+@Select("""
+    SELECT id, username, age
+    FROM `user`
+    ORDER BY id
+    LIMIT 5
+    """)
+List<User> selectFirstFive();
+```
+使用参数：
+```java
+@Select("""
+    SELECT id, username, age
+    FROM `user`
+    ORDER BY id
+    LIMIT #{limit}
+    """)
+List<User> selectLimited(
+        @Param("limit") Integer limit
+);
+```
