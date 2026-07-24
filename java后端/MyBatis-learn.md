@@ -775,3 +775,122 @@ List<User> selectLimited(
         @Param("limit") Integer limit
 );
 ```
+# MyBatis新增数据
+## 1.查询与新增的区别
+查询使用：
+SELECT
+目的：
+从数据库读取数据
+返回值通常是：
+User
+List<User>
+Long
+新增使用：
+INSERT
+目的：
+向数据库写入一条新记录
+返回值通常是：
+int
+表示影响了多少行。
+## 2.INSERT基本语法
+向 user 表新增用户：
+```sql
+INSERT INTO `user` (username, age)
+VALUES ('lisi', 21);
+```
+结构：
+INSERT INTO `user`  → 向哪张表新增
+(username, age)     → 给哪些列提供值
+VALUES (...)        → 实际写入的值
+## 3.使用@Insert
+Mapper可以写：
+```java
+@Insert("""
+    INSERT INTO `user` (username, age)
+    VALUES (#{username}, #{age})
+    """)
+int insert(User user);
+```
+需要导入：
+import org.apache.ibatis.annotations.Insert;
+方法含义：
+接收一个User对象
+→ 读取username和age属性
+→ 执行INSERT
+→ 返回影响行数
+## 4.对象参数怎样进入SQL
+假设：
+```java
+User user = new User();
+user.setUsername("lisi");
+user.setAge(21);
+调用：
+userMapper.insert(user);
+```
+MyBatis读取：
+#{username}
+近似理解为：
+user.getUsername()
+得到：
+lisi
+读取：
+#{age}
+近似理解为：
+user.getAge()
+得到：
+21
+SQL经过预编译：
+```sql
+INSERT INTO `user` (username, age)
+VALUES (?, ?)
+```
+参数绑定：
+第1个? → "lisi"
+第2个? → 21
+因此仍然使用安全的 #{} 参数绑定。
+## 5.为什么不需要@Param
+当前方法：
+```java
+int insert(User user);
+```
+MyBatis接收到的根参数就是User，因此可以直接读取：
+#{username}
+#{age}
+如果写成：
+```java
+int insert(@Param("user") User user);
+```
+SQL才需要写：
+#{user.username}
+#{user.age}
+对于只传一个User对象的方法，直接写：
+int insert(User user);
+更加简洁。
+
+可以把 #{} 想象成从一个文件夹中找数据。
+
+不写 @Param：
+
+根目录
+├── username
+└── age
+
+所以直接写：
+
+#{username}
+#{age}
+
+写了 @Param("user")：
+
+根目录
+└── user
+    ├── username
+    └── age
+
+所以必须写：
+
+#{user.username}
+#{user.age}
+
+核心区别就是：属性外面是否多包了一层参数名称 user。
+## 6.为什么返回int

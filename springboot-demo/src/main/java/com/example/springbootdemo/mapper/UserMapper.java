@@ -11,6 +11,6 @@ import java.util.List;
 public interface UserMapper {
     @Select("SELECT id, username, age FROM `user` WHERE id = #{id}")
     User selectById(@Param("id") Long id);
-    @Select("SELECT id,username,age FROM 'user' ORDER BY id ASC")
+    @Select("SELECT id, username, age FROM `user` ORDER BY id ASC")
     List<User> selectAll();
 }

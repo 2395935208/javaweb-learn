@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -21,5 +22,10 @@ public class UserController {
     @GetMapping("/{id}")
     public User getUser(@PathVariable Long id){
         return userService.getUserById(id);
+    }
+    //接收所有用户的方法
+    @GetMapping
+    public List<User> getAllUsers(){
+        return userService.getAllUsers();
     }
 }
