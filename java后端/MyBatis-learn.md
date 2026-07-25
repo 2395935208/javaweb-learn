@@ -894,3 +894,91 @@ int insert(User user);
 
 核心区别就是：属性外面是否多包了一层参数名称 user。
 ## 6.为什么返回int
+方法：
+```java
+int insert(User user);
+```
+返回的int是SQL影响的行数
+正常新增一名用户：
+返回1
+没有成功新增：
+可能返回0或直接抛出异常
+## 7.自增主键为什么不写进INSERT
+数据库表通常设置：
+id BIGINT PRIMARY KEY AUTO_INCREMENT
+表示ID由MySQL自动生成。
+新增时不需要提供ID：
+INSERT INTO `user` (username, age)
+VALUES (#{username}, #{age});
+MySQL会自动生成：
+id = 2
+id = 3
+id = 4
+...
+因此新增前的User可能是：
+User user = new User();
+user.setUsername("lisi");
+user.setAge(21);
+这时：
+user.getId()
+是：
+null
+数据库执行新增后，MySQL生成ID。
+## 8.什么是主键回填
+有时新增完成后，Java程序立即需要知道数据库生成的ID。
+例如：
+新增用户
+→ 数据库生成id=15
+→ 后续需要使用用户15创建个人资料
+可以给Mapper方法增加：
+```java
+@Options(
+    useGeneratedKeys = true,
+    keyProperty = "id",
+    keyColumn = "id"
+)
+```
+完整写法：
+```java
+@Insert("""
+    INSERT INTO `user` (username, age)
+    VALUES (#{username}, #{age})
+    """)
+@Options(
+    useGeneratedKeys = true,
+    keyProperty = "id",
+    keyColumn = "id"
+)
+int insert(User user);
+```
+需要导入：
+import org.apache.ibatis.annotations.Options;
+三个配置含义：
+useGeneratedKeys = true
+→ 获取数据库自动生成的主键
+
+keyColumn = "id"
+→ 数据库中的主键列叫id
+
+keyProperty = "id"
+→ 把主键写回User对象的id属性
+## 9.新增的完整流程
+Java创建User对象
+        ↓
+Service调用Mapper.insert(user)
+        ↓
+MyBatis代理找到@Insert
+        ↓
+读取user.username和user.age
+        ↓
+SQL转换为VALUES (?, ?)
+        ↓
+JDBC绑定参数
+        ↓
+MySQL新增一行
+        ↓
+MySQL生成自增ID
+        ↓
+MyBatis将ID回填到user.id
+        ↓
+Mapper返回影响行数1

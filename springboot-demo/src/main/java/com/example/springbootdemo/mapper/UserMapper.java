@@ -1,9 +1,8 @@
 package com.example.springbootdemo.mapper;
 
 import com.example.springbootdemo.entity.User;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
+
 import java.util.List;
 
 //
@@ -13,4 +12,14 @@ public interface UserMapper {
     User selectById(@Param("id") Long id);
     @Select("SELECT id, username, age FROM `user` ORDER BY id ASC")
     List<User> selectAll();
+    @Insert("""
+    INSERT INTO `user` (username, age)
+    VALUES (#{username}, #{age})
+    """)
+    @Options(
+            useGeneratedKeys = true,
+            keyProperty = "id",
+            keyColumn = "id"
+    )
+    int insert(User user);
 }

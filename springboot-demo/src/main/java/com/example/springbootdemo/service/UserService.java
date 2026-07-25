@@ -22,4 +22,13 @@ public class UserService {
     public List<User> getAllUsers(){
         return userMapper.selectAll();
     }
+    //添加一个插入用户的方法
+    public User createUser(User user){
+        int affectedRows= userMapper.insert(user);
+
+        if(affectedRows!=1){
+            throw new RuntimeException("插入用户失败");
+        }
+        return user;
+    }
 }
