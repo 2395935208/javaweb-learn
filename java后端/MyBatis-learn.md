@@ -982,3 +982,60 @@ MySQL生成自增ID
 MyBatis将ID回填到user.id
         ↓
 Mapper返回影响行数1
+#   @RequestBody与POST请求
+## 1.完整的新增请求
+客户端发送：
+POST /users HTTP/1.1
+Content-Type: application/json
+请求体：
+{
+  "username": "lisi",
+  "age": 21
+}
+这里包含三个重要部分：
+POST                     → 这次请求想创建数据
+/users                   → 操作的资源是用户
+Content-Type             → 请求体是JSON格式
+请求体中的JSON            → 新用户的数据
+## 2.@PostMapping
+这个方法处理HTTP POST请求。
+现在同一个URL可以对应不同操作：
+GET  /users → 查询全部用户
+POST /users → 新增用户
+它们不会冲突，因为HTTP方法不同。
+## 3.@RequestBody
+Controller方法可以声明：
+```java
+public User createUser(@RequestBody User user)
+```
+@RequestBody告诉Spring MVC：
+从HTTP请求体中读取JSON，并把JSON转换成User对象。
+## 4.@RequestBody属于哪一层
+它属于Controller层：
+```java
+@PostMapping
+public User createUser(@RequestBody User user)
+```
+因为它负责：
+读取HTTP请求体
+## 5.完整的双向转换
+新增用户会同时发生两次Jackson转换：
+请求：
+JSON
+↓ Jackson反序列化
+User{id=null, username="lisi", age=21}
+
+数据库操作：
+User
+↓ MyBatis读取属性
+INSERT
+↓ 主键回填
+User{id=2, username="lisi", age=21}
+
+响应：
+User
+↓ Jackson序列化
+JSON
+注意职责：
+Jackson处理JSON和Java对象
+MyBatis处理Java对象和数据库
