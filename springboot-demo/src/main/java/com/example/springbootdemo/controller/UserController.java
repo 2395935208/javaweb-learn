@@ -7,6 +7,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 @RestController
 @RequestMapping("/users")
@@ -28,4 +32,12 @@ public class UserController {
     public List<User> getAllUsers(){
         return userService.getAllUsers();
     }
+    //处理POST请求
+    @PostMapping
+    //成功时返回201 Created
+    @ResponseStatus(HttpStatus.CREATED)
+    public User createUser(@RequestBody User user){
+        return userService.createUser(user);
+    }
+
 }
