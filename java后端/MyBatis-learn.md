@@ -1039,3 +1039,94 @@ JSON
 注意职责：
 Jackson处理JSON和Java对象
 MyBatis处理Java对象和数据库
+# @Update修改数据
+修改用户的SQL通常是：
+```sql
+UPDATE `user`
+SET username = 'newName',
+    age = 22
+WHERE id = 2;
+```
+结构：
+UPDATE  → 修改哪张表
+SET     → 哪些字段改成什么值
+WHERE   → 修改哪些记录
+其中最重要的是：
+WHERE id = 2
+如果没有WHERE：
+```sql
+UPDATE `user`
+SET age = 22;
+```
+数据库中所有用户的年龄都会被改成22。
+所以要牢记：
+写UPDATE和DELETE时，先确认WHERE条件，再执行SQL。
+## 1.使用@Update
+Mapper中可以声明：
+```java
+@Update("""
+    UPDATE `user`
+    SET username = #{username},
+        age = #{age}
+    WHERE id = #{id}
+    """)
+int update(User user);
+```
+## 2.int返回什么
+方法：
+```java
+int update(User user);
+```
+返回的 int依然表示：
+SQL影响的行数。
+## 3.ID应该来自URL还是JSON
+我们准备设计：
+PUT /users/2
+请求体：
+```json
+{
+  "username": "newName",
+  "age": 22
+}
+```
+ID放在URL：
+/users/2
+新数据放在JSON请求体：
+username
+age
+Controller将同时接收：
+```java
+@PathVariable Long id
+```
+以及：
+```java
+@RequestBody User user
+```
+可以近似写成：
+user.setId(id);
+userService.updateUser(user);
+于是进入Mapper前，User变成：
+User{
+    id=2,
+    username="newName",
+    age=22
+}
+为什么优先使用URL中的ID？
+因为：
+PUT /users/2
+已经明确表示要修改用户2。
+如果请求体又传：
+```json
+{
+  "id": 5,
+  "username": "newName",
+  "age": 22
+}
+```
+就会产生冲突：
+URL说修改用户2
+JSON说修改用户5
+最简单安全的处理是：
+以URL中的ID为准，由Controller执行 user.setId(id)。
+
+当前请求JSON暂时不要提供ID。
