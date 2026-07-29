@@ -1130,3 +1130,17 @@ JSON说修改用户5
 以URL中的ID为准，由Controller执行 user.setId(id)。
 
 当前请求JSON暂时不要提供ID。
+# PUT与POST的区别
+POST/users：创建用户，id由数据库生成，通常返回201，不幂等
+PUT/users/{id}：修改指定用户，id来自URL，通常返回200（响应请求体）或者204（不响应请求体），幂等
+
+COntroller组合路径id和请求体：
+user.setId(id);
+
+PUT通常用于完整修改，PATCH通常用于部分修改
+
+同意路径可以通过不同HTTP方法标识不同操作
+
+
+
+
