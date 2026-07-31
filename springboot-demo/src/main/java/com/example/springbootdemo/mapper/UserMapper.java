@@ -22,4 +22,13 @@ public interface UserMapper {
             keyColumn = "id"
     )
     int insert(User user);
+
+    //更新
+    @Update("""
+    UPDATE `user`
+    SET username = #{username},
+        age = #{age}
+    WHERE id = #{id}
+    """)
+    int update(User user);
 }

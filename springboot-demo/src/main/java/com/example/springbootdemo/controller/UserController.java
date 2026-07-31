@@ -2,15 +2,10 @@ package com.example.springbootdemo.controller;
 
 import com.example.springbootdemo.entity.User;
 import com.example.springbootdemo.service.UserService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 @RestController
 @RequestMapping("/users")
@@ -38,6 +33,12 @@ public class UserController {
     @ResponseStatus(HttpStatus.CREATED)
     public User createUser(@RequestBody User user){
         return userService.createUser(user);
+    }
+    //处理PUT请求
+    @PutMapping("/{id}")
+    public User updateUser(@PathVariable Long id,@RequestBody User user){
+        user.setId(id);
+        return userService.updateUser(user);
     }
 
 }

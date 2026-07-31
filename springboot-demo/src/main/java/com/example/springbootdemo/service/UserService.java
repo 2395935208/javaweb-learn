@@ -31,4 +31,12 @@ public class UserService {
         }
         return user;
     }
+    //添加一个更新用户的方法
+    public User updateUser(User user){
+        int affectedRows= userMapper.update(user);
+        if(affectedRows!=1){
+            throw new IllegalStateException("修改用户失败");
+        }
+        return userMapper.selectById(user.getId());
+    }
 }
