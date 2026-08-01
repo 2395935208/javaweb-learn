@@ -1141,7 +1141,9 @@ PUT通常用于完整修改，PATCH通常用于部分修改
 
 同意路径可以通过不同HTTP方法标识不同操作
 
-# 下一课
-
-
-
+# DELETE删除
+## 1.DELETE SQL
+```java
+DELETE FROM `user`
+WHERE id = 2;
+```
