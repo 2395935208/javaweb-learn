@@ -41,4 +41,10 @@ public class UserController {
         return userService.updateUser(user);
     }
 
+    //处理DELETE请求
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteUser(@PathVariable Long id){
+        userService.deleteUser(id);
+    }
 }

@@ -1147,3 +1147,27 @@ PUT通常用于完整修改，PATCH通常用于部分修改
 DELETE FROM `user`
 WHERE id = 2;
 ```
+## 2.MyBatis 的 @Delete
+MyBatis会使用：
+```java
+@Delete("DELETE FROM `user` WHERE id = #{id}")
+int deleteById(@Param("id") Long id);
+```
+最终的预编译SQL是：
+```sql
+DELETE FROM `user` WHERE id = ?
+```
+返回值依然是影响的行数
+1：找到并删除了一条记录
+0：没有这个id，无删除记录
+## 3.RESTful 删除接口
+删除id为2的用户
+DELETE /users/2
+不是下面这些写法：
+GET /deleteUser?id=2
+POST /users/delete/2
+RESTful API 倾向于用 HTTP 方法表达操作。s
+## 4.DELETE 是否幂等
+DELETE是幂等的
+连续两次发送相同的请求，结果是一样的
+

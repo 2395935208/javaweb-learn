@@ -39,4 +39,11 @@ public class UserService {
         }
         return userMapper.selectById(user.getId());
     }
+    //添加一个删除用户的方法
+    public void deleteUser(Long id){
+        int affectedRows= userMapper.deleteById(id);
+        if(affectedRows!=1){
+            throw new IllegalStateException("删除用户失败");
+        }
+    }
 }

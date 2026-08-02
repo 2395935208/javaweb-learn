@@ -31,4 +31,11 @@ public interface UserMapper {
     WHERE id = #{id}
     """)
     int update(User user);
+
+    //删除操作
+    @Delete("""
+    DELETE FROM `user`
+    WHERE id = #{id}
+    """)
+    int deleteById(@Param("id") Long id);
 }
