@@ -1166,8 +1166,11 @@ DELETE /users/2
 不是下面这些写法：
 GET /deleteUser?id=2
 POST /users/delete/2
-RESTful API 倾向于用 HTTP 方法表达操作。s
+RESTful API 倾向于用 HTTP 方法表达操作。
 ## 4.DELETE 是否幂等
 DELETE是幂等的
 连续两次发送相同的请求，结果是一样的
+# XML映射
+目前所有的sql注解都写在注解中
+
 
