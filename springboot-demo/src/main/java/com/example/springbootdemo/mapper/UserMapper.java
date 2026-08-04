@@ -8,7 +8,6 @@ import java.util.List;
 //
 @Mapper
 public interface UserMapper {
-    @Select("SELECT id, username, age FROM `user` WHERE id = #{id}")
     User selectById(@Param("id") Long id);
     @Select("SELECT id, username, age FROM `user` ORDER BY id ASC")
     List<User> selectAll();
@@ -38,4 +37,9 @@ public interface UserMapper {
     WHERE id = #{id}
     """)
     int deleteById(@Param("id") Long id);
+    //动态sql查询
+    List<User> search(
+      @Param("keyword") String keyword,
+      @Param("minAge") Integer minAge
+    );
 }

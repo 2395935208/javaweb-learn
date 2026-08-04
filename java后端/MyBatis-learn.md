@@ -1171,6 +1171,16 @@ RESTful API 倾向于用 HTTP 方法表达操作。
 DELETE是幂等的
 连续两次发送相同的请求，结果是一样的
 # XML映射
-目前所有的sql注解都写在注解中
-
-
+目前所有的sql注解都写在注解中，后续可以把这些内容写在XML文件中
+- namespace=Mapper 接口完整的路径名 
+作用：告诉MyBatis这个接口对应的数据库表是哪一张
+- id=Mapper 方法名
+- resultType=每行结果转换成的java类型
+# 动态sql
+- if
+根据参数绑定是否拼接SQL
+- where
+自动添加WHERE，删除开头多余的AND/OR
+- set
+自动添加SET，删除结尾多余的逗号
+# 分页查询

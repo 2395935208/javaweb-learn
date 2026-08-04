@@ -47,4 +47,12 @@ public class UserController {
     public void deleteUser(@PathVariable Long id){
         userService.deleteUser(id);
     }
+    //动态查询
+    @GetMapping("/-search")
+    public List<User> searchUsers(@RequestParam(required = false) String keyword,
+                                  @RequestParam(required = false) Integer minAge
+    ){
+        return userService.searchUsers(keyword,minAge);
+
+    }
 }

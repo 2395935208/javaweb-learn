@@ -46,4 +46,8 @@ public class UserService {
             throw new IllegalStateException("删除用户失败");
         }
     }
+    //动态sql查询
+    public List<User> searchUsers(String keyword,Integer minAge){
+        return userMapper.search(keyword,minAge);
+    }
 }
