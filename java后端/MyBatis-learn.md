@@ -1184,3 +1184,13 @@ DELETE是幂等的
 - set
 自动添加SET，删除结尾多余的逗号
 # 分页查询
+- page:第几页
+- pageSize：每页多少条
+- offset：跳过多少条
+常用公式：
+offset = (page - 1) * pageSize;
+SQL语句：
+```java
+ORDER BY id ASC
+LIMIT #{offset}, #{pageSize}
+```
