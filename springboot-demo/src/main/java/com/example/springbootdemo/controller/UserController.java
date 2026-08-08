@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import org.springframework.http.HttpStatus;
+import com.example.springbootdemo.dto.UserPageResult;
 
 @RestController
 @RequestMapping("/users")
@@ -48,11 +49,18 @@ public class UserController {
         userService.deleteUser(id);
     }
     //动态查询
-    @GetMapping("/-search")
+    @GetMapping("/search")
     public List<User> searchUsers(@RequestParam(required = false) String keyword,
                                   @RequestParam(required = false) Integer minAge
     ){
         return userService.searchUsers(keyword,minAge);
 
     }
-}
+    //分页查询
+    @GetMapping("/page")
+    public UserPageResult getUserPage(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int pageSize){
+        return userService.getUserPage(page,pageSize);
+    }
+    }

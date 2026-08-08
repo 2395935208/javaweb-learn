@@ -4,6 +4,7 @@ import com.example.springbootdemo.entity.User;
 import com.example.springbootdemo.mapper.UserMapper;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import com.example.springbootdemo.dto.UserPageResult;
 
 //注解表示这是一个业务类
 @Service
@@ -49,5 +50,28 @@ public class UserService {
     //动态sql查询
     public List<User> searchUsers(String keyword,Integer minAge){
         return userMapper.search(keyword,minAge);
+    }
+    //分页查询
+    public UserPageResult getUserPage(int page,int pageSize){
+        if(page<1){
+            throw new IllegalArgumentException("page必须大于等于1");
+        }
+
+        if (pageSize < 1 || pageSize > 100) {
+            throw new IllegalArgumentException("pageSize必须在1到100之间");
+        }
+
+        //定义offset
+        int offset = (page - 1) * pageSize;
+
+        List<User> records = userMapper.selectPage(offset, pageSize);
+        long total = userMapper.count();
+        long totalPages = (total + pageSize - 1) / pageSize;
+        return new UserPageResult(
+                records,
+                total,
+                page,
+                pageSize,
+                totalPages);
     }
 }

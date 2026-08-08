@@ -42,4 +42,11 @@ public interface UserMapper {
       @Param("keyword") String keyword,
       @Param("minAge") Integer minAge
     );
+    //分页查询
+    List<User> selectPage(
+            @Param("offset") Integer offset,
+            @Param("pageSize") Integer pageSize
+    );
+    //统计用户总数
+    long count();
 }
