@@ -1194,4 +1194,15 @@ SQL语句：
 ORDER BY id ASC
 LIMIT #{offset}, #{pageSize}
 ```
-# 分页查询
+# resultMap 结果映射
+- resultType:指定对象类型，MyBatis会自动映射
+- resultMap:指定数据库列和java属性的对应关系
+```XML
+<id column="数据库主键列" property="Java主键属性"/>
+
+<result column="数据库普通列" property="Java普通属性"/>
+```
+SQL别名也可以解决简单的名称不一致的问题
+map-underscore-to-camel-case 可以自动处理下划线转驼峰（在application.yml中配置）
+# 事务与 @Transactional
+
