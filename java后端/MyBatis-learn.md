@@ -1205,4 +1205,15 @@ LIMIT #{offset}, #{pageSize}
 SQL别名也可以解决简单的名称不一致的问题
 map-underscore-to-camel-case 可以自动处理下划线转驼峰（在application.yml中配置）
 # 事务与 @Transactional
-
+事务：多个数据库操作要么操作全部成功，要么全部失败 
+commit：正常结束
+rollback：发生异常
+```java
+@Transactional
+public void businessMethod() {
+    mapper.operation1();
+    mapper.operation2();
+}
+```
+事务放在service层，RuntimeException默认触发回滚
+如果异常被catch后不抛出，也可能不回滚
