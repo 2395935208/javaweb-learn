@@ -64,8 +64,5 @@ public class UserController {
         return userService.getUserPage(page,pageSize);
     }
 
-    @PostMapping("/transaction-test/tx")
-    public void testWithTransaction(@RequestBody User user) {
-        userService.createUserThenFailWithTransaction(user);
-    }
+
     }

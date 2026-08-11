@@ -1217,3 +1217,23 @@ public void businessMethod() {
 ```
 事务放在service层，RuntimeException默认触发回滚
 如果异常被catch后不抛出，也可能不回滚
+# MyBatis批量操作与<forEach>
+- IN:表示字段值属于某个集合
+- foreach：遍历java的集合
+- item：当前遍历到的元素，临时名称
+- open：开始字符
+- separator：元素之间的分隔符
+- close：结束字符
+## java
+```java
+@Param("ids") List<Long> ids
+```
+## XML
+```XML
+collection="ids"
+```
+## 内部
+```XML
+item="id"
+#{id}
+```

@@ -5,7 +5,6 @@ import com.example.springbootdemo.mapper.UserMapper;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import com.example.springbootdemo.dto.UserPageResult;
-import org.springframework.transaction.annotation.Transactional;
 
 //注解表示这是一个业务类
 @Service
@@ -75,15 +74,5 @@ public class UserService {
                 pageSize,
                 totalPages);
     }
-    //事务方法
-    @Transactional(rollbackFor = Exception.class)
-    public void createUserThenFailWithTransaction(User user) {
-        int affectedRows = userMapper.insert(user);
 
-        if (affectedRows != 1) {
-            throw new IllegalStateException("插入用户失败");
-        }
-
-        throw new IllegalStateException("故意制造异常，测试事务回滚");
-    }
 }
