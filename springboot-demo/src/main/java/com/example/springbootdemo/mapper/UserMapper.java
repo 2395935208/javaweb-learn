@@ -49,4 +49,8 @@ public interface UserMapper {
     );
     //统计用户总数
     long count();
+
+    //批量查询
+    List<User> selectByIds(@Param("ids") List<Long> ids);
+
 }
