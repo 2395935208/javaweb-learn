@@ -64,5 +64,10 @@ public class UserController {
         return userService.getUserPage(page,pageSize);
     }
 
+    //批量查询
+    @GetMapping("/batch")
+    public List<User> getUsersByIds(@RequestParam List<Long> ids){
+        return userService.getUsersByIds(ids);
 
+    }
     }

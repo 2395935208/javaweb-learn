@@ -75,4 +75,11 @@ public class UserService {
                 totalPages);
     }
 
+    //批量查询
+    public List<User> getUsersByIds(List<Long> ids){
+        if(ids==null||ids.isEmpty()){
+            throw new IllegalArgumentException("用户列表不能为空");
+        }
+        return userMapper.selectByIds(ids);
+    }
 }
