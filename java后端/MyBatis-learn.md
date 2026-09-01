@@ -1238,4 +1238,27 @@ item="id"
 #{id}
 ```
 # 今天去上海玩，不学习了
-#  
+# SQL日志
+## 排错顺序
+- MyBatis找不到参数，检查
+没有 SQL 日志
+→ 可能还没执行到 Mapper
+→ 先查请求参数、Controller参数转换和JSON
+
+- Invalid bound statement
+→ MyBatis找不到对应SQL
+→ 查 namespace 和 id
+
+- Parameter not found
+→ MyBatis找不到参数
+→ 查 @Param、#{参数名}、collection
+
+- 有 Preparing，但SQL执行失败
+→ 查SQL结构、表名、列名和Parameters
+
+- SQL返回多行，Mapper返回User
+→ TooManyResultsException
+→ 改成List<User>
+
+- 异常信息很长
+→ 继续找更具体的Caused by

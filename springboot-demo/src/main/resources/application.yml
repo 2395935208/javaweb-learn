@@ -6,8 +6,10 @@ spring:
   datasource:
     url: "jdbc:mysql://localhost:3306/springboot_demo?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai"
     username: root
-    password: "123456"
+    password: "xjywz66613"
     driver-class-name: com.mysql.cj.jdbc.Driver
 
 mybatis:
   mapper-locations: classpath:mapper/*.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
