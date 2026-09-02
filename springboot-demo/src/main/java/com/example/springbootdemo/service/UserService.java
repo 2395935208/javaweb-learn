@@ -5,6 +5,7 @@ import com.example.springbootdemo.mapper.UserMapper;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import com.example.springbootdemo.dto.UserPageResult;
+import com.example.springbootdemo.dto.UserOrderDTO;
 
 //注解表示这是一个业务类
 @Service
@@ -81,5 +82,9 @@ public class UserService {
             throw new IllegalArgumentException("用户列表不能为空");
         }
         return userMapper.selectByIds(ids);
+    }
+    //添加一个调用多个表的方法
+    public List<UserOrderDTO> getUserOrders() {
+        return userMapper.selectUserOrders();
     }
 }

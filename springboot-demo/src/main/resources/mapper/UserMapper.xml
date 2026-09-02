@@ -66,4 +66,17 @@
         FROM `user`
     </select>
 
+    <select id="selectUserOrders"
+            resultType="com.example.springbootdemo.dto.UserOrderDTO">
+        SELECT
+        u.id AS userId,
+        u.username AS username,
+        o.id AS orderId,
+        o.product_name AS productName,
+        o.amount AS amount
+        FROM `user` u
+        LEFT JOIN user_order o
+        ON u.id = o.user_id
+        ORDER BY u.id ASC, o.id ASC
+    </select>
 </mapper>

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import com.example.springbootdemo.dto.UserPageResult;
+import com.example.springbootdemo.dto.UserOrderDTO;
 
 @RestController
 @RequestMapping("/users")
@@ -69,5 +70,10 @@ public class UserController {
     public List<User> getUsersByIds(@RequestParam List<Long> ids){
         return userService.getUsersByIds(ids);
 
+    }
+
+    @GetMapping("/with-orders")
+    public List<UserOrderDTO> getUserOrders() {
+        return userService.getUserOrders();
     }
     }

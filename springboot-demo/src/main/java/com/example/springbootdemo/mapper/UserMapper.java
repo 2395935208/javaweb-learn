@@ -4,10 +4,13 @@ import com.example.springbootdemo.entity.User;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
+import com.example.springbootdemo.dto.UserOrderDTO;
 
 //
 @Mapper
 public interface UserMapper {
+    List<UserOrderDTO> selectUserOrders();
+
     User selectById(@Param("id") Long id);
     @Select("SELECT id, username, age FROM `user` ORDER BY id ASC")
     List<User> selectAll();
