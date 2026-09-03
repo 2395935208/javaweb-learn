@@ -1277,3 +1277,15 @@ ON u.id = o.user_id
 ## ON与WHERE的区别
 ON是决定两张表根据什么连接的
 WHERE是决定连接完成后筛选哪些结果的
+# association嵌套对象映射
+association用于单个对象的嵌套
+简单映射用resultType，明确嵌套的用resultMap
+## 映射属性
+column   → SQL查询结果列名
+property → Java属性名
+javaType → 嵌套对象的Java类型
+## association示例
+<association
+    property="user"
+    javaType="com.example.springbootdemo.entity.User">
+    
