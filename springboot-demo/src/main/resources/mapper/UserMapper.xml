@@ -79,4 +79,40 @@
         ON u.id = o.user_id
         ORDER BY u.id ASC, o.id ASC
     </select>
+    <!-- 订单中嵌套用户对象的映射规则 -->
+    <resultMap id="orderWithUserResultMap"
+               type="com.example.springbootdemo.dto.OrderWithUserDTO">
+
+        <!-- 外层：订单属性 -->
+        <id column="order_id" property="orderId"/>
+        <result column="product_name" property="productName"/>
+        <result column="amount" property="amount"/>
+
+        <!-- 内层：User对象 -->
+        <association property="user"
+                     javaType="com.example.springbootdemo.entity.User"
+                     notNullColumn="user_id">
+
+            <id column="user_id" property="id"/>
+            <result column="username" property="username"/>
+            <result column="age" property="age"/>
+        </association>
+    </resultMap>
+
+
+    <!-- 查询订单，并把用户信息封装进订单的user属性 -->
+    <select id="selectOrdersWithUser"
+            resultMap="orderWithUserResultMap">
+        SELECT
+        o.id AS order_id,
+        o.product_name AS product_name,
+        o.amount AS amount,
+        u.id AS user_id,
+        u.username AS username,
+        u.age AS age
+        FROM user_order o
+        LEFT JOIN `user` u
+        ON o.user_id = u.id
+        ORDER BY o.id ASC
+    </select>
 </mapper>

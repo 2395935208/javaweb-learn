@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import com.example.springbootdemo.dto.UserPageResult;
 import com.example.springbootdemo.dto.UserOrderDTO;
+import com.example.springbootdemo.dto.OrderWithUserDTO;
 
 //注解表示这是一个业务类
 @Service
@@ -86,5 +87,9 @@ public class UserService {
     //添加一个调用多个表的方法
     public List<UserOrderDTO> getUserOrders() {
         return userMapper.selectUserOrders();
+    }
+    // 查询订单，并在每个订单中嵌套用户对象
+    public List<OrderWithUserDTO> getOrdersWithUser() {
+        return userMapper.selectOrdersWithUser();
     }
 }

@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 import com.example.springbootdemo.dto.UserOrderDTO;
+import com.example.springbootdemo.dto.OrderWithUserDTO;
 
 //
 @Mapper
@@ -56,4 +57,6 @@ public interface UserMapper {
     //批量查询
     List<User> selectByIds(@Param("ids") List<Long> ids);
 
+    //嵌套查询
+    List<OrderWithUserDTO> selectOrdersWithUser();
 }

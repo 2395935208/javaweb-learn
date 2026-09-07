@@ -8,6 +8,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import com.example.springbootdemo.dto.UserPageResult;
 import com.example.springbootdemo.dto.UserOrderDTO;
+import com.example.springbootdemo.dto.OrderWithUserDTO;
 
 @RestController
 @RequestMapping("/users")
@@ -75,5 +76,11 @@ public class UserController {
     @GetMapping("/with-orders")
     public List<UserOrderDTO> getUserOrders() {
         return userService.getUserOrders();
+    }
+
+    // 查询订单，每个订单中嵌套一个用户对象
+    @GetMapping("/orders-with-user")
+    public List<OrderWithUserDTO> getOrdersWithUser() {
+        return userService.getOrdersWithUser();
     }
     }
