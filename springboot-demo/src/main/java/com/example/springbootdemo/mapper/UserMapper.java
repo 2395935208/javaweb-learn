@@ -1,5 +1,6 @@
 package com.example.springbootdemo.mapper;
 
+import com.example.springbootdemo.dto.UserWithOrdersDTO;
 import com.example.springbootdemo.entity.User;
 import org.apache.ibatis.annotations.*;
 
@@ -59,4 +60,8 @@ public interface UserMapper {
 
     //嵌套查询
     List<OrderWithUserDTO> selectOrdersWithUser();
+
+    //一对多嵌套查询
+    List<UserWithOrdersDTO> selectUsersWithOrders();
+
 }

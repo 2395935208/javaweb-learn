@@ -1,5 +1,6 @@
 package com.example.springbootdemo.service;
 
+import com.example.springbootdemo.dto.UserWithOrdersDTO;
 import com.example.springbootdemo.entity.User;
 import com.example.springbootdemo.mapper.UserMapper;
 import org.springframework.stereotype.Service;
@@ -91,5 +92,9 @@ public class UserService {
     // 查询订单，并在每个订单中嵌套用户对象
     public List<OrderWithUserDTO> getOrdersWithUser() {
         return userMapper.selectOrdersWithUser();
+    }
+    //一对多嵌套查询
+    public List<UserWithOrdersDTO> getUsersWithOrders(){
+        return userMapper.selectUsersWithOrders();
     }
 }

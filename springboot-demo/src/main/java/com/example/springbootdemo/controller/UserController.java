@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import com.example.springbootdemo.dto.UserPageResult;
 import com.example.springbootdemo.dto.UserOrderDTO;
 import com.example.springbootdemo.dto.OrderWithUserDTO;
-
+import com.example.springbootdemo.dto.UserWithOrdersDTO;
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -82,5 +82,11 @@ public class UserController {
     @GetMapping("/orders-with-user")
     public List<OrderWithUserDTO> getOrdersWithUser() {
         return userService.getOrdersWithUser();
+    }
+
+    //一对多嵌套查询
+    @GetMapping("/with-orders-nested")
+    public List<UserWithOrdersDTO> getUserWithOrders(){
+        return userService.getUsersWithOrders();
     }
     }

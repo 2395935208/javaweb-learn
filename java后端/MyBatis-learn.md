@@ -1288,4 +1288,19 @@ javaType → 嵌套对象的Java类型
 <association
     property="user"
     javaType="com.example.springbootdemo.entity.User">
-    
+
+# collection一对多集合映射
+
+## collection示例
+<collection 
+    property="orders" 
+    ofType="OrderDTO">
+
+property：外层对象中的集合属性名
+ofType：集合里每个元素的类型
+## 两层主键
+外层<id>：识别用户，合并相同用户的多行数据
+内层<id>：识别不同订单
+## 防止产生空订单
+notNullColumn="order_id"
+它不会阻止集合创建，只会阻止创建字段全为 null 的订单对象。
