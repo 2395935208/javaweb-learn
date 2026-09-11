@@ -89,4 +89,10 @@ public class UserController {
     public List<UserWithOrdersDTO> getUserWithOrders(){
         return userService.getUsersWithOrders();
     }
+
+    //根据id查询用户及其订单
+    @GetMapping("/batch-with-orders")
+    public List<UserWithOrdersDTO> getUsersWithOrdersByIds(@RequestParam("ids") List<Long> ids){
+        return userService.getUsersWithOrdersByIds(ids);
+    }
     }

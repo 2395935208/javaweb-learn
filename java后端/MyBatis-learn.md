@@ -1304,3 +1304,74 @@ ofType：集合里每个元素的类型
 ## 防止产生空订单
 notNullColumn="order_id"
 它不会阻止集合创建，只会阻止创建字段全为 null 的订单对象。
+# MyBatis小结
+## 1.请求与数据库链路
+HTTP请求
+→ Controller接收参数
+→ Service处理业务
+→ Mapper声明数据库操作
+→ MyBatis生成代理并执行SQL
+→ JDBC连接MySQL
+→ MyBatis映射Java对象
+→ Controller返回JSON
+## 2.Mapper接口与XML的对应关系
+XML namespace → Mapper接口完整包名
+SQL标签id     → Mapper方法名
+#{参数}       → 参数名或@Param名称
+resultMap     → 查询结果的对象映射规则
+## 3.参数绑定
+`#{value}` → 预编译参数，通常安全，应优先使用
+
+`${value}` → 直接拼接字符串，存在SQL注入风险
+
+## 4.返回结果映射 
+简单对象映射 → resultType
+需要自定义或嵌套映射 → resultMap
+
+嵌套属性：
+单个对象 → association + javaType
+集合对象 → collection + ofType
+## 5.动态SQL（记得不牢固）
+<if>      → 条件成立时拼接SQL
+<where>   → 自动处理WHERE和多余的AND
+<foreach> → 遍历集合，常用于IN查询
+
+## 6.分页（不牢固）c
+java语句：
+offset = (page - 1) * pageSize;
+totalPages = (total + pageSize - 1) / pageSize;
+
+SQL语句：
+LIMIT offset, pageSize
+
+## 7.多表映射
+INNER JOIN → 只保留两边都匹配的数据
+LEFT JOIN  → 保留左表全部数据
+ON         → 说明两张表如何关联
+WHERE      → 筛选关联后的结果
+
+## 8.日志排错（不牢固）
+Preparing  → 带?的预编译SQL
+Parameters → 实际参数和类型
+Total      → 数据库返回行数
+如果没有出现SQL日志，问题通常发生在Controller、参数转换或Mapper调用之前。
+
+# 容易弄混的点
+namespace → Mapper接口完整包名
+id → Mapper方法名
+#{参数} → @Param指定的名称
+
+foreach：
+collection集合名
+item元素名
+open开始符
+separator分隔符
+close结束符
+
+offset = (page - 1) * pageSize;
+totalPages = (total + pageSize - 1) / pageSize;
+
+insert返回值 → 受影响行数
+@Options(useGeneratedKeys=true) → 主键回填
+
+参数转换失败 → 通常返回400 → Mapper未执行 → 没有SQL日志

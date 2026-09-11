@@ -64,4 +64,7 @@ public interface UserMapper {
     //一对多嵌套查询
     List<UserWithOrdersDTO> selectUsersWithOrders();
 
+    //根据多个id查询用户
+    List<UserWithOrdersDTO> selectUsersWithOrdersByIds(@Param("ids") List<Long> ids);
+
 }

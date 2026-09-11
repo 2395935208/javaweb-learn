@@ -3,6 +3,7 @@ package com.example.springbootdemo.service;
 import com.example.springbootdemo.dto.UserWithOrdersDTO;
 import com.example.springbootdemo.entity.User;
 import com.example.springbootdemo.mapper.UserMapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import com.example.springbootdemo.dto.UserPageResult;
@@ -96,5 +97,13 @@ public class UserService {
     //一对多嵌套查询
     public List<UserWithOrdersDTO> getUsersWithOrders(){
         return userMapper.selectUsersWithOrders();
+    }
+
+    //根据id查询用户及其订单
+    public List<UserWithOrdersDTO> getUsersWithOrdersByIds(List <Long> ids){
+        if(ids==null ||ids.isEmpty()){
+            throw new IllegalArgumentException("用户ID列表不能为空");
+        }
+        return userMapper.selectUsersWithOrdersByIds(ids);
     }
 }

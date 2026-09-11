@@ -151,6 +151,31 @@
         ORDER BY u.id ASC, o.id ASC
     </select>
 
+        <!--通过id查询用户及其订单-->
+    <select id="selectUsersWithOrdersByIds"
+            resultMap="userWithOrdersResultMap">
+        SELECT
+        u.id AS user_id,
+        u.username AS username,
+        u.age AS age,
+        o.id AS order_id,
+        o.product_name AS product_name,
+        o.amount AS amount
+        FROM `user` u
+        LEFT JOIN user_order o
+        ON u.id=o.user_id
+        WHERE u.id IN
+        <foreach
+                collection="ids"
+                item="id"
+                open="("
+                separator=","
+                close=")">
+            #{id}
+        </foreach>
+        ORDER BY u.id ASC,o.id ASC
+    </select>
+
 
 
 </mapper>
