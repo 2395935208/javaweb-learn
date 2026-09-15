@@ -1,15 +1,13 @@
 package com.example.springbootdemo.controller;
 
+import com.example.springbootdemo.dto.*;
 import com.example.springbootdemo.entity.User;
 import com.example.springbootdemo.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import org.springframework.http.HttpStatus;
-import com.example.springbootdemo.dto.UserPageResult;
-import com.example.springbootdemo.dto.UserOrderDTO;
-import com.example.springbootdemo.dto.OrderWithUserDTO;
-import com.example.springbootdemo.dto.UserWithOrdersDTO;
+
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -95,4 +93,11 @@ public class UserController {
     public List<UserWithOrdersDTO> getUsersWithOrdersByIds(@RequestParam("ids") List<Long> ids){
         return userService.getUsersWithOrdersByIds(ids);
     }
+
+    //RESTful功能学习
+    @GetMapping("/{id}/orders")
+    public List<OrderDTO> getOrdersByUserId(@PathVariable Long id){
+        return userService.getOrdersByUserId(id);
+    }
+
     }

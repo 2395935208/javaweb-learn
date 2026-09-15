@@ -176,6 +176,15 @@
         ORDER BY u.id ASC,o.id ASC
     </select>
 
-
-
+    <!--RESTful功能练习-->
+    <select id="selectOrdersByUserId"
+            resultType="com.example.springbootdemo.dto.OrderDTO">
+        SELECT
+        o.id AS orderId,
+        o.product_name AS productName,
+        o.amount AS amount
+        FROM user_order o
+        WHERE o.user_id=#{userId}
+        ORDER BY o.id ASC
+    </select>
 </mapper>

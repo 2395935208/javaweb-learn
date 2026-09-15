@@ -1,14 +1,14 @@
 package com.example.springbootdemo.service;
 
+import com.example.springbootdemo.dto.OrderDTO;
+import com.example.springbootdemo.dto.OrderWithUserDTO;
+import com.example.springbootdemo.dto.UserOrderDTO;
+import com.example.springbootdemo.dto.UserPageResult;
 import com.example.springbootdemo.dto.UserWithOrdersDTO;
 import com.example.springbootdemo.entity.User;
 import com.example.springbootdemo.mapper.UserMapper;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 import java.util.List;
-import com.example.springbootdemo.dto.UserPageResult;
-import com.example.springbootdemo.dto.UserOrderDTO;
-import com.example.springbootdemo.dto.OrderWithUserDTO;
 
 //注解表示这是一个业务类
 @Service
@@ -105,5 +105,13 @@ public class UserService {
             throw new IllegalArgumentException("用户ID列表不能为空");
         }
         return userMapper.selectUsersWithOrdersByIds(ids);
+    }
+
+    //RESTful功能学习
+    public List<OrderDTO> getOrdersByUserId(Long userId){
+        if(userId==null){
+            throw new IllegalArgumentException("用户ID不能为空");
+        }
+        return userMapper.selectOrdersByUserId(userId);
     }
 }

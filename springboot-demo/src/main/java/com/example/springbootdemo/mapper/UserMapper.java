@@ -1,5 +1,6 @@
 package com.example.springbootdemo.mapper;
 
+import com.example.springbootdemo.dto.OrderDTO;
 import com.example.springbootdemo.dto.UserWithOrdersDTO;
 import com.example.springbootdemo.entity.User;
 import org.apache.ibatis.annotations.*;
@@ -67,4 +68,6 @@ public interface UserMapper {
     //根据多个id查询用户
     List<UserWithOrdersDTO> selectUsersWithOrdersByIds(@Param("ids") List<Long> ids);
 
+    //RESTful功能练习
+    List<OrderDTO> selectOrdersByUserId(@Param("userId") Long userId);
 }
