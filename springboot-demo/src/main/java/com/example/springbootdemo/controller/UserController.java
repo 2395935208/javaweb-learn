@@ -3,10 +3,12 @@ package com.example.springbootdemo.controller;
 import com.example.springbootdemo.dto.*;
 import com.example.springbootdemo.entity.User;
 import com.example.springbootdemo.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import org.springframework.http.HttpStatus;
+import com.example.springbootdemo.dto.CreateUserRequest;
 
 @RestController
 @RequestMapping("/users")
@@ -32,7 +34,10 @@ public class UserController {
     @PostMapping
     //成功时返回201 Created
     @ResponseStatus(HttpStatus.CREATED)
-    public User createUser(@RequestBody User user){
+    public User createUser(@Valid  @RequestBody CreateUserRequest request){
+        User user=new User();
+        user.setUsername(request.getUsername());
+        user.setAge(request.getAge());
         return userService.createUser(user);
     }
     //处理PUT请求
