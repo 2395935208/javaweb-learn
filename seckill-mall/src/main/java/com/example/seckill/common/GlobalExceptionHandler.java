@@ -1,5 +1,6 @@
 package com.example.seckill.common;
 
+import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -20,6 +21,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Result<Void>> handleBusinessException(BusinessException exception) {
         return ResponseEntity.status(exception.getStatus())
                 .body(Result.error(exception.getStatus().value(), exception.getMessage()));
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<Result<Void>> handleConstraintViolation(ConstraintViolationException exception) {
+        String message = exception.getConstraintViolations().stream()
+                .map(violation -> violation.getMessage())
+                .distinct()
+                .sorted()
+                .collect(java.util.stream.Collectors.joining("；"));
+        return ResponseEntity.badRequest().body(Result.error(400, message));
     }
 
     @ExceptionHandler(Exception.class)

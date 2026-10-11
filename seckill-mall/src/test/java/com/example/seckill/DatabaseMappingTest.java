@@ -34,8 +34,8 @@ class DatabaseMappingTest {
         LocalDateTime end = start.plusHours(1);
         jdbc.update("INSERT INTO user (id, username, password_hash, phone, created_at) VALUES (?, ?, ?, ?, ?)",
                 id, unique, "test-hash", "13800000000", start);
-        jdbc.update("INSERT INTO product (id, name, price, stock, status, created_at) VALUES (?, ?, ?, ?, ?, ?)",
-                id, "测试商品", new BigDecimal("99.90"), 10, 1, start);
+        jdbc.update("INSERT INTO product (id, name, description, price, stock, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                id, "测试商品", "商品介绍", new BigDecimal("99.90"), 10, 1, start);
         jdbc.update("INSERT INTO seckill_product (id, product_id, seckill_price, seckill_stock, start_time, end_time, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
                 id, id, new BigDecimal("9.90"), 5, start, end, 0, start);
         jdbc.update("INSERT INTO `order` (id, order_no, user_id, product_id, seckill_price, status, pay_expire_at, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
@@ -46,9 +46,9 @@ class DatabaseMappingTest {
                 User::getPhone, User::getCreatedAt)
                 .containsExactly(id, unique, "test-hash", "13800000000", start);
         Product product = productMapper.selectById(id);
-        assertThat(product).extracting(Product::getId, Product::getName, Product::getPrice,
+        assertThat(product).extracting(Product::getId, Product::getName, Product::getDescription, Product::getPrice,
                 Product::getStock, Product::getStatus, Product::getCreatedAt)
-                .containsExactly(id, "测试商品", new BigDecimal("99.90"), 10, 1, start);
+                .containsExactly(id, "测试商品", "商品介绍", new BigDecimal("99.90"), 10, 1, start);
         SeckillProduct seckill = seckillProductMapper.selectById(id);
         assertThat(seckill).extracting(SeckillProduct::getId, SeckillProduct::getProductId,
                 SeckillProduct::getSeckillPrice, SeckillProduct::getSeckillStock,
