@@ -35,10 +35,11 @@ CREATE TABLE `order` (
   id BIGINT PRIMARY KEY AUTO_INCREMENT,
   order_no VARCHAR(64) NOT NULL UNIQUE,
   user_id BIGINT NOT NULL,
-  product_id BIGINT NOT NULL,
+  product_id BIGINT NOT NULL COMMENT '秒杀商品ID，对应 seckill_product.id',
   seckill_price DECIMAL(10,2) NOT NULL,
   status TINYINT NOT NULL DEFAULT 0 COMMENT '0待支付 1已支付 2已取消',
   pay_expire_at DATETIME,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  INDEX idx_user_id (user_id)
+  INDEX idx_user_id (user_id),
+  UNIQUE KEY uk_user_product (user_id, product_id)
 );
